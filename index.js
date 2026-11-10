@@ -57,4 +57,9 @@ client.on(Events.InteractionCreate, async (i) => {
   }
 });
 
-client.login(cfg.token);
+process.on('unhandledRejection', (e) => console.error('unhandledRejection:', e));
+client.on('error', (e) => console.error('client error:', e));
+client.on('warn', (m) => console.warn('warn:', m));
+client.on('debug', (m) => console.log('[debug]', m));
+console.log('Tentando logar... token:', cfg.token ? `${cfg.token.length} caracteres` : 'VAZIO');
+client.login(cfg.token).catch((e) => console.error('Falha no login:', e));
