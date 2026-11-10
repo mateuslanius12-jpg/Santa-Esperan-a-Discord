@@ -61,5 +61,9 @@ process.on('unhandledRejection', (e) => console.error('unhandledRejection:', e))
 client.on('error', (e) => console.error('client error:', e));
 client.on('warn', (m) => console.warn('warn:', m));
 client.on('debug', (m) => console.log('[debug]', m));
+fetch('https://discord.com/api/v10/gateway')
+  .then(async (r) => console.log('TESTE DISCORD:', r.status, (await r.text()).slice(0, 200)))
+  .catch((e) => console.error('TESTE DISCORD falhou:', e.message));
+client.rest.on('rateLimited', (i) => console.log('RATE LIMITED:', JSON.stringify(i)));
 console.log('Tentando logar... token:', cfg.token ? `${cfg.token.length} caracteres` : 'VAZIO');
 client.login(cfg.token).catch((e) => console.error('Falha no login:', e));
