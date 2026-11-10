@@ -1,0 +1,16 @@
+{
+  "name": "bot-cidade",
+  "version": "1.0.0",
+  "description": "Bot único da cidade: status, boas-vindas, WL, tickets e /embed",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "discord.js": "^14.16.3",
+    "dotenv": "^16.4.5"
+  }
+}
