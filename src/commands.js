@@ -33,10 +33,27 @@ const painel = new SlashCommandBuilder()
     o.setName('tipo').setDescription('Qual painel').setRequired(true)
       .addChoices({ name: 'Whitelist (WL)', value: 'wl' }, { name: 'Tickets', value: 'ticket' }, { name: 'Registro de nome', value: 'registro' }));
 
+const eleicaoOpt = (o) => o.setName('eleicao').setDescription('Qual eleição').setAutocomplete(true).setRequired(true);
+
+const urna = new SlashCommandBuilder()
+  .setName('urna')
+  .setDescription('Urna de votação (eleição)')
+  .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
+  .addSubcommand((s) => s.setName('criar').setDescription('Cria uma eleição')
+    .addChannelOption((o) => o.setName('canal').setDescription('Canal onde a urna será publicada').addChannelTypes(...TEXT_TYPES).setRequired(true))
+    .addChannelOption((o) => o.setName('canal_resultado').setDescription('Canal do resultado (padrão: o mesmo da urna)').addChannelTypes(...TEXT_TYPES)))
+  .addSubcommand((s) => s.setName('editar').setDescription('Edita título, descrição, cor, candidatos e botões').addStringOption(eleicaoOpt))
+  .addSubcommand((s) => s.setName('horario').setDescription('Muda o dia e a hora da publicação do resultado')
+    .addStringOption(eleicaoOpt)
+    .addStringOption((o) => o.setName('data').setDescription('Ex: 11/11/2026 20:00 (horário de Brasília)').setRequired(true)))
+  .addSubcommand((s) => s.setName('encerrar').setDescription('Encerra agora e publica o resultado').addStringOption(eleicaoOpt))
+  .addSubcommand((s) => s.setName('lista').setDescription('Lista as eleições'))
+  .addSubcommand((s) => s.setName('excluir').setDescription('Remove uma eleição').addStringOption(eleicaoOpt));
+
 async function register() {
   const rest = new REST({ version: '10' }).setToken(cfg.token);
   await rest.put(Routes.applicationGuildCommands(cfg.clientId, cfg.guildId), {
-    body: [embed.toJSON(), painel.toJSON()],
+    body: [embed.toJSON(), painel.toJSON(), urna.toJSON()],
   });
   console.log('Comandos registrados.');
 }
