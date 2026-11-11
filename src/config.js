@@ -6,7 +6,7 @@ module.exports = {
   clientId: e.CLIENT_ID,
   guildId: e.GUILD_ID,
 
-  cityName: e.CITY_NAME || 'Santa Esperança RP',
+  cityName: e.CITY_NAME || 'Minha Cidade RP',
   fivemAddress: e.FIVEM_ADDRESS,
   connectUrl: e.CONNECT_URL,
 
@@ -29,7 +29,7 @@ module.exports = {
   },
 
   // Cor padrão dos embeds do bot
-  color: 0x00FFFF,
+  color: 0x0dcbff,
 
   // Textos editáveis. Use {user} (menção), {name} (nome) e {count} (nº de membros)
   text: {
