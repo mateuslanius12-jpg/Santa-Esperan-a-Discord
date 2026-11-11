@@ -19,21 +19,23 @@ module.exports = {
     wlStaff: e.CANAL_WL_STAFF,
     ticketLogs: e.CANAL_LOGS_TICKET,
     ticketCategory: e.CATEGORIA_TICKETS,
+    registerLog: e.CANAL_REGISTRO_LOG, // opcional: avisa a staff de cada registro
   },
   role: {
     semWl: e.CARGO_SEM_WL,
     cidadao: e.CARGO_CIDADAO,
     staff: e.CARGO_STAFF,
+    registrado: e.CARGO_REGISTRADO, // opcional: cargo dado a quem registra o nome
   },
 
   // Cor padrão dos embeds do bot
-  color: 557001,
+  color: 0xe11d2e,
 
   // Textos editáveis. Use {user} (menção), {name} (nome) e {count} (nº de membros)
   text: {
     welcomeTitle: '👋 Bem-vindo(a) à {server}!',
     welcomeDesc:
-      '{user}, que bom ter você aqui!\n\nVocê é o membro **#{count}**.\nPara jogar, faça sua **WL** no canal #📄┋fazer-whitelist.',
+      '{user}, que bom ter você aqui!\n\nVocê é o membro **#{count}**.\nPara jogar, faça sua **WL** no canal de whitelist.',
     goodbyeTitle: '😢 Até logo!',
     goodbyeDesc: '**{name}** saiu do servidor. Agora somos **{count}** membros.',
   },
