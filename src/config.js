@@ -29,7 +29,7 @@ module.exports = {
   },
 
   // Cor padrão dos embeds do bot
-  color: 0xe11d2e,
+  color: 904191,
 
   // Textos editáveis. Use {user} (menção), {name} (nome) e {count} (nº de membros)
   text: {
