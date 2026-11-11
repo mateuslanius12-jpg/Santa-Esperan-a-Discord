@@ -27,11 +27,11 @@ for (let n = 1; n <= 3; n++) {
 
 const painel = new SlashCommandBuilder()
   .setName('painel')
-  .setDescription('Posta um painel neste canal (WL ou tickets)')
+  .setDescription('Posta um painel neste canal (WL, tickets ou registro)')
   .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
   .addStringOption((o) =>
     o.setName('tipo').setDescription('Qual painel').setRequired(true)
-      .addChoices({ name: 'Whitelist (WL)', value: 'wl' }, { name: 'Tickets', value: 'ticket' }));
+      .addChoices({ name: 'Whitelist (WL)', value: 'wl' }, { name: 'Tickets', value: 'ticket' }, { name: 'Registro de nome', value: 'registro' }));
 
 async function register() {
   const rest = new REST({ version: '10' }).setToken(cfg.token);
