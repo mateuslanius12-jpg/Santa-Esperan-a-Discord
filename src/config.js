@@ -27,13 +27,13 @@ module.exports = {
   },
 
   // Cor padrão dos embeds do bot
-  color: 0xe11d2e,
+  color: 557001,
 
   // Textos editáveis. Use {user} (menção), {name} (nome) e {count} (nº de membros)
   text: {
     welcomeTitle: '👋 Bem-vindo(a) à {server}!',
     welcomeDesc:
-      '{user}, que bom ter você aqui!\n\nVocê é o membro **#{count}**.\nPara jogar, faça sua **WL** no canal de whitelist.',
+      '{user}, que bom ter você aqui!\n\nVocê é o membro **#{count}**.\nPara jogar, faça sua **WL** no canal #📄┋fazer-whitelist.',
     goodbyeTitle: '😢 Até logo!',
     goodbyeDesc: '**{name}** saiu do servidor. Agora somos **{count}** membros.',
   },
