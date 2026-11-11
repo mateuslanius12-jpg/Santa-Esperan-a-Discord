@@ -7,6 +7,7 @@ const welcome = require('./src/welcome');
 const wl = require('./src/wl');
 const tickets = require('./src/tickets');
 const embed = require('./src/embed');
+const registro = require('./src/registro');
 
 // ---- Servidor HTTP (o Render exige uma porta aberta; o UptimeRobot pinga aqui) ----
 const PORT = process.env.PORT || 3000;
@@ -39,7 +40,7 @@ client.on(Events.InteractionCreate, async (i) => {
       if (i.commandName === 'embed') return await embed.run(i);
       if (i.commandName === 'painel') {
         const tipo = i.options.getString('tipo', true);
-        const payload = tipo === 'wl' ? wl.panelPayload() : tickets.panelPayload();
+        const payload = tipo === 'wl' ? wl.panelPayload() : tipo === 'registro' ? registro.panelPayload() : tickets.panelPayload();
         await i.channel.send(payload);
         return await i.reply({ content: '✅ Painel enviado neste canal.', flags: MessageFlags.Ephemeral });
       }
@@ -48,6 +49,7 @@ client.on(Events.InteractionCreate, async (i) => {
     if (i.isButton() || i.isModalSubmit()) {
       if (i.customId.startsWith('wl:')) return await wl.handle(i);
       if (i.customId.startsWith('ticket:')) return await tickets.handle(i);
+      if (i.customId.startsWith('reg:')) return await registro.handle(i);
     }
   } catch (err) {
     console.error(err);
@@ -57,6 +59,7 @@ client.on(Events.InteractionCreate, async (i) => {
   }
 });
 
+// ---- Diagnóstico de conexão (pode apagar quando o bot estiver conectando normalmente) ----
 process.on('unhandledRejection', (e) => console.error('unhandledRejection:', e));
 client.on('error', (e) => console.error('client error:', e));
 client.on('warn', (m) => console.warn('warn:', m));
