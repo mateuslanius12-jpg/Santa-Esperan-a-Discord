@@ -8,6 +8,7 @@ const wl = require('./src/wl');
 const tickets = require('./src/tickets');
 const embed = require('./src/embed');
 const registro = require('./src/registro');
+const urna = require('./src/urna');
 
 // ---- Servidor HTTP (o Render exige uma porta aberta; o UptimeRobot pinga aqui) ----
 const PORT = process.env.PORT || 3000;
@@ -30,14 +31,17 @@ client.once(Events.ClientReady, async (c) => {
   console.log(`Logado como ${c.user.tag}`);
   try { await commands.register(); } catch (e) { console.error('Erro ao registrar comandos:', e); }
   status.start(client);
+  urna.start(client).catch((e) => console.error('Erro ao iniciar a urna:', e));
 });
 
 welcome.register(client);
 
 client.on(Events.InteractionCreate, async (i) => {
   try {
+    if (i.isAutocomplete()) return await urna.autocomplete(i);
     if (i.isChatInputCommand()) {
       if (i.commandName === 'embed') return await embed.run(i);
+      if (i.commandName === 'urna') return await urna.command(i);
       if (i.commandName === 'painel') {
         const tipo = i.options.getString('tipo', true);
         const payload = tipo === 'wl' ? wl.panelPayload() : tipo === 'registro' ? registro.panelPayload() : tickets.panelPayload();
@@ -50,6 +54,7 @@ client.on(Events.InteractionCreate, async (i) => {
       if (i.customId.startsWith('wl:')) return await wl.handle(i);
       if (i.customId.startsWith('ticket:')) return await tickets.handle(i);
       if (i.customId.startsWith('reg:')) return await registro.handle(i);
+      if (i.customId.startsWith('urna:')) return await urna.handle(i);
     }
   } catch (err) {
     console.error(err);
