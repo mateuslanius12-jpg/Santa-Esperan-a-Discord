@@ -6,7 +6,7 @@ module.exports = {
   clientId: e.CLIENT_ID,
   guildId: e.GUILD_ID,
 
-  cityName: e.CITY_NAME || 'Minha Cidade RP',
+  cityName: e.CITY_NAME || 'Santa Esperança RP',
   fivemAddress: e.FIVEM_ADDRESS,
   connectUrl: e.CONNECT_URL,
 
