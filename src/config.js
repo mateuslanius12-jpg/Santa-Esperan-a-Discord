@@ -26,7 +26,12 @@ module.exports = {
     cidadao: e.CARGO_CIDADAO,
     staff: e.CARGO_STAFF,
     registrado: e.CARGO_REGISTRADO, // opcional: cargo dado a quem registra o nome
+    prefeito: e.CARGO_PREFEITO,     // opcional: cargo dado a quem vence a eleição de prefeito
+    vice: e.CARGO_VICE,             // opcional: cargo dado a quem vence a eleição de vice-prefeito
   },
+
+  // Quantas eleições fica bloqueado quem exerceu 2 mandatos seguidos
+  bloqueioEleicoes: parseInt(e.ELEICOES_BLOQUEIO || '4', 10),
 
   // Cor padrão dos embeds do bot
   color: 0x0dcbff,
