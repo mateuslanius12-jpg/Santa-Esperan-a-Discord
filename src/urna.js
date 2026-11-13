@@ -441,7 +441,7 @@ async function start(c) {
 }
 
 module.exports = {
-  start, command, autocomplete, handle,
+  start, command, autocomplete, handle, getStore: () => store,
   _test: { parseDate, parseCandidates, parseColor, brt, publicPayload, vote, publish, loadAll, save, elections,
     setStore: (s, c) => { store = s; client = c; } },
 };
