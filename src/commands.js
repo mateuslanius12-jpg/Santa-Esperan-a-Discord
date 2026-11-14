@@ -4,12 +4,14 @@ const {
 const cfg = require('./config');
 
 const TEXT_TYPES = [ChannelType.GuildText, ChannelType.GuildAnnouncement];
+// /embed também aceita fórum (cria uma postagem nova) e postagens/tópicos já existentes
+const EMBED_TYPES = [...TEXT_TYPES, ChannelType.GuildForum, ChannelType.PublicThread, ChannelType.PrivateThread, ChannelType.AnnouncementThread];
 
 const embed = new SlashCommandBuilder()
   .setName('embed')
   .setDescription('Cria um embed personalizado enviado pelo bot')
   .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
-  .addChannelOption((o) => o.setName('canal').setDescription('Canal onde o embed será enviado').addChannelTypes(...TEXT_TYPES).setRequired(true))
+  .addChannelOption((o) => o.setName('canal').setDescription('Canal, fórum (cria postagem) ou postagem onde o embed será enviado').addChannelTypes(...EMBED_TYPES).setRequired(true))
   .addStringOption((o) => o.setName('titulo').setDescription('Título do embed').setMaxLength(256))
   .addStringOption((o) => o.setName('texto').setDescription('Texto (use \\n para pular linha)').setMaxLength(4000))
   .addStringOption((o) => o.setName('cor').setDescription('Cor: #ff0000 ou vermelho, azul, verde, amarelo, roxo...').setMaxLength(20))
@@ -21,7 +23,7 @@ const embed = new SlashCommandBuilder()
 for (let n = 1; n <= 3; n++) {
   embed
     .addStringOption((o) => o.setName(`botao${n}_texto`).setDescription(`Botão ${n}: texto`).setMaxLength(80))
-    .addChannelOption((o) => o.setName(`botao${n}_canal`).setDescription(`Botão ${n}: leva para este canal`).addChannelTypes(...TEXT_TYPES, ChannelType.GuildForum, ChannelType.GuildVoice))
+    .addChannelOption((o) => o.setName(`botao${n}_canal`).setDescription(`Botão ${n}: leva para este canal`).addChannelTypes(...EMBED_TYPES, ChannelType.GuildVoice))
     .addStringOption((o) => o.setName(`botao${n}_link`).setDescription(`Botão ${n}: ou leva para este link`));
 }
 
