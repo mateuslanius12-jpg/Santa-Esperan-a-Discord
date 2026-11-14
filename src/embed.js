@@ -1,6 +1,7 @@
 const {
   EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, AttachmentBuilder, MessageFlags,
 } = require('discord.js');
+const { ChannelType } = require('discord.js');
 const cfg = require('./config');
 
 const EPH = MessageFlags.Ephemeral;
@@ -74,13 +75,24 @@ async function run(i) {
   const payload = { embeds: [embed], files };
   if (buttons.length) payload.components = [new ActionRowBuilder().addComponents(buttons)];
 
+  // Resposta rápida: criar postagem/enviar pode demorar mais de 3s
+  await i.deferReply({ flags: EPH });
   try {
+    if (canal.type === ChannelType.GuildForum) {
+      // Fórum: cria uma postagem nova (o título do embed vira o título da postagem)
+      const post = await canal.threads.create({ name: (titulo || 'Postagem').slice(0, 100), message: payload });
+      return i.editReply(`✅ Postagem criada no fórum: ${post}.`);
+    }
+    // Postagem/tópico já existente: reabre se estiver arquivada
+    if (canal.isThread && canal.isThread() && canal.archived) await canal.setArchived(false).catch(() => {});
     await canal.send(payload);
   } catch (err) {
     console.error(err);
-    return i.reply({ content: `❌ Não consegui enviar em ${canal}. Verifique as permissões do bot nesse canal.`, flags: EPH });
+    const forumTag = canal.type === ChannelType.GuildForum && /tag/i.test(String(err.message))
+      ? '\nEsse fórum exige uma **tag** na postagem; o bot não escolhe tag. Crie o post à mão ou desative "exigir tag" no fórum.' : '';
+    return i.editReply(`❌ Não consegui enviar em ${canal}. Verifique as permissões do bot nesse canal (ver canal, enviar mensagens${canal.type === ChannelType.GuildForum ? ', criar postagens' : ' e enviar em tópicos'}).${forumTag}`);
   }
-  return i.reply({ content: `✅ Embed enviado em ${canal}.`, flags: EPH });
+  return i.editReply(`✅ Embed enviado em ${canal}.`);
 }
 
 module.exports = { run };
