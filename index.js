@@ -40,6 +40,7 @@ client.once(Events.ClientReady, async (c) => {
 welcome.register(client);
 
 client.on(Events.InteractionCreate, async (i) => {
+  console.log('[interacao]', i.type, i.customId || i.commandName || '', 'atraso', Date.now() - i.createdTimestamp, 'ms');
   try {
     if (i.isAutocomplete()) return await (i.commandName === 'eleicao' ? eleicao.autocomplete(i) : urna.autocomplete(i));
     if (i.isChatInputCommand()) {
@@ -69,14 +70,37 @@ client.on(Events.InteractionCreate, async (i) => {
   }
 });
 
-// ---- Diagnóstico de conexão (pode apagar quando o bot estiver conectando normalmente) ----
+// ---- Estabilidade: logs de conexão, anti-sono e reinício automático ----
 process.on('unhandledRejection', (e) => console.error('unhandledRejection:', e));
 client.on('error', (e) => console.error('client error:', e));
 client.on('warn', (m) => console.warn('warn:', m));
-client.on('debug', (m) => console.log('[debug]', m));
-fetch('https://discord.com/api/v10/gateway')
-  .then(async (r) => console.log('TESTE DISCORD:', r.status, (await r.text()).slice(0, 200)))
-  .catch((e) => console.error('TESTE DISCORD falhou:', e.message));
-client.rest.on('rateLimited', (i) => console.log('RATE LIMITED:', JSON.stringify(i)));
-console.log('Tentando logar... token:', cfg.token ? `${cfg.token.length} caracteres` : 'VAZIO');
-client.login(cfg.token).catch((e) => console.error('Falha no login:', e));
+client.on('shardDisconnect', (ev) => console.warn('[shard] desconectou, código', ev && ev.code));
+client.on('shardReconnecting', () => console.warn('[shard] reconectando...'));
+client.on('shardResume', () => console.log('[shard] reconectado'));
+client.on('shardError', (e) => console.error('[shard] erro:', e && e.message));
+client.on('invalidated', () => { console.error('Sessão invalidada. Reiniciando...'); process.exit(1); });
+client.rest.on('rateLimited', (r) => console.log('RATE LIMITED:', JSON.stringify(r)));
+
+// Impede o Render grátis de dormir: o bot acessa o próprio endereço a cada 4 minutos
+const SELF_URL = process.env.RENDER_EXTERNAL_URL;
+if (SELF_URL) setInterval(() => fetch(SELF_URL).catch(() => {}), 4 * 60 * 1000);
+
+// Vigia: se o bot parar de responder ao Discord por ~3 minutos seguidos, reinicia sozinho
+// (é o mesmo efeito de você editar a variável e fazer deploy; o Render sobe o bot de novo)
+let falhas = 0;
+setInterval(async () => {
+  try {
+    if (!client.isReady()) throw new Error('bot não está conectado');
+    await Promise.race([
+      client.rest.get('/users/@me'),
+      new Promise((_, rej) => setTimeout(() => rej(new Error('Discord demorou mais de 15s')), 15000)),
+    ]);
+    falhas = 0;
+  } catch (e) {
+    falhas += 1;
+    console.error(`[vigia] falha ${falhas}/3:`, e.message);
+    if (falhas >= 3) { console.error('[vigia] reiniciando o bot...'); process.exit(1); }
+  }
+}, 60 * 1000);
+
+client.login(cfg.token).catch((e) => { console.error('Falha no login:', e); process.exit(1); });
