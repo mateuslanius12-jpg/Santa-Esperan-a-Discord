@@ -6,7 +6,7 @@ module.exports = {
   clientId: e.CLIENT_ID,
   guildId: e.GUILD_ID,
 
-  cityName: e.CITY_NAME || 'Santa Esperança SP',
+  cityName: e.CITY_NAME || 'Campinas SP',
   fivemAddress: e.FIVEM_ADDRESS,
   connectUrl: e.CONNECT_URL,
 
@@ -34,7 +34,7 @@ module.exports = {
   bloqueioEleicoes: parseInt(e.ELEICOES_BLOQUEIO || '4', 10),
 
   // Cor padrão dos embeds do bot
-  color: 0x0dcbff,
+  color: 0x1D4ED8,
 
   // Textos editáveis. Use {user} (menção), {name} (nome) e {count} (nº de membros)
   text: {
